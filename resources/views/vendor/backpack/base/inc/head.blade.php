@@ -9,6 +9,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <title>
+{{--    {{ 'Craigslist Crawler'  }}--}}
   {{ isset($title) ? $title.' :: '.config('backpack.base.project_name').' Admin' : config('backpack.base.project_name').' Admin' }}
 </title>
 
