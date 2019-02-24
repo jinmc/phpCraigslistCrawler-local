@@ -15,6 +15,11 @@ Route::get('/', 'DashboardController@index');
 
 Route::get('/dashboard', 'DashboardController@index');
 
+CRUD::resource('/book', 'BookCrudController');
+
+
+
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});

@@ -11,3 +11,4 @@
 
 <li><a href='{{ '/' }}'><i class='fa fa-tag'></i> <span>Home</span></a></li>
 <li><a href='{{ '/search' }}'><i class='fa fa-tag'></i> <span>Search</span></a></li>
+<li><a href='{{ '/book' }}'><i class='fa fa-tag'></i> <span>Books</span></a></li>
