@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+//        '\App\Console\Commands\logDemo',
+//        '\App\Console\Commands\crawlCraigslist'
     ];
 
     /**
@@ -24,8 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+//        $schedule->command('command:crawlCraigslist')->cron('0 */6 * * *');
+         $schedule->command('command:crawlCraigslist')
+                  ->everyMinute();
+//         $schedule->command('command:logDemo')->everyMinute();
     }
 
     /**

@@ -27,6 +27,7 @@ class BookCrudController extends CrudController
         $this->crud->setRoute( '/book');
         $this->crud->setEntityNameStrings('book', 'books');
 
+
         $this->crud->removeAllButtons();
 
 
