@@ -1,28 +1,31 @@
 
 <?php
 
-// From URL to get webpage contents.
-$url = "https://www.geeksforgeeks.org/";
+$curl = curl_init();
 
-// Initialize a CURL session.
-$ch = curl_init();
+//        $url = 'https://www.geeksforgeeks.org/';
+$url = 'http://newyork.craigslist.org/search/bka';
 
 // Return Page contents.
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($curl, CURLOPT_URL, $url);
 
-//grab URL and pass it to the variable.
-curl_setopt($ch, CURLOPT_URL, $url);
+$result = curl_exec($curl);
 
+$books = array();
 
+preg_match_all("!<a.*class=.result-title hdrlnk.*>(.*?)<\/a>!", $result, $match);
 
-$result = curl_exec($ch);
+$books['name'] = $match[1];
+
+$data = $books['name'];
+
+//        $data = $result . "\n";
+
+curl_close($curl);
 
 $file = dirname(__FILE__) . '/output.txt';
 
-$data = $result;
-
 file_put_contents($file, $data,FILE_APPEND);
-
-//echo $result;
-
 ?>
