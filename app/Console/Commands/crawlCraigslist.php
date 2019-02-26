@@ -39,53 +39,75 @@ class crawlCraigslist extends Command
     public function handle()
     {
         Book::truncate();
-//        \Log::info('cleared database!!!  ' . \Carbon\Carbon::now());
+        \Log::info('cleared database!!!  ' . \Carbon\Carbon::now());
 
-        $this->scrape();
+//        $this->scrape();
 
     }
 
     public static function scrape() {
 
-        $curl = curl_init();
+
+        $items = 0;
+        $add = '';
+
+        while ($items <= 1000) {
+
+            if ($items != 0) {
+                $add = '?s=' . $items;
+            }
+
+
+            $curl = curl_init();
 
 //        $url = 'https://www.geeksforgeeks.org/';
-        $url = 'http://newyork.craigslist.org/search/bka';
+            $url = 'http://newyork.craigslist.org/search/bka' . $add;
 
-        // Return Page contents.
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_URL, $url);
 
-        $result = curl_exec($curl);
+            // Return Page contents.
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($curl, CURLOPT_URL, $url);
 
-        $books = array();
+            $result = curl_exec($curl);
 
-        preg_match_all('!<p class=\"result-info\">(.*?)<\/p>!is', $result, $match);
+            $books = array();
 
-        $data = $match[1];
+            preg_match_all('!<p class=\"result-info\">(.*?)<\/p>!is', $result, $match);
+
+            $data = $match[1];
 //        print_r($match[1]);
 
-        for ($i = 0;$i < count($match[1]);$i++) {
+            \Log::info('num of logs : ' . count($match[1]) . \Carbon\Carbon::now());
 
-            if (preg_match("!<a.*class=.result-title hdrlnk.*>(.*?)<\/a>!", $match[1][$i], $name)) {
-                $books['name'][$i] = $name[1];
-            } else {
-                $books['name'][$i] = '';
-            }
+
+            for ($i = 0; $i < count($match[1]); $i++) {
+
+                if (preg_match("!<a.*class=.result-title hdrlnk.*>(.*?)<\/a>!", $match[1][$i], $name)) {
+                    $books['name'][$i] = $name[1];
+                } else {
+                    $books['name'][$i] = '';
+                }
 //
-            if (preg_match('!<span.*class=.result-price.*>(.*?)<\/span>!', $match[1][$i], $price)) {
-                $books['price'][$i] = $price[1];
-            } else {
-                $books['price'][$i] = '';
+                if (preg_match('!<span.*class=.result-price.*>(.*?)<\/span>!', $match[1][$i], $price)) {
+                    $books['price'][$i] = $price[1];
+                } else {
+                    $books['price'][$i] = '';
+                }
+
+                // where we make new row in book database
+                $bookData = array('name' => $books['name'][$i], 'price' => $books['price'][$i]);
+//                Book::create($bookData);
+
+                $items++;
+                if ($items > 1000) {
+                    curl_close($curl);
+                    return;
+                }
+
             }
 
-            // where we make new row in book database
-            $bookData = array('name' => $books['name'][$i], 'price' => $books['price'][$i]);
-            Book::create($bookData);
-
-        }
-
+            \Log::info('parsed url '. $url . ' ' .  \Carbon\Carbon::now());
 
 //        print_r($books['price']);
 
@@ -123,11 +145,12 @@ class crawlCraigslist extends Command
 //        print_r($data2);
 //        $data = $result . "\n";
 
-        curl_close($curl);
+            curl_close($curl);
 
 //        $file = dirname(__FILE__) . '/output.txt';
 
 //        file_put_contents($file, $data,FILE_APPEND);
+        }
 
     }
 

@@ -26,8 +26,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('command:crawlCraigslist')->cron('0 */6 * * *');
-         $schedule->command('command:crawlCraigslist')
-                  ->everyMinute();
+//         $schedule->command('command:crawlCraigslist')
+//                  ->everyMinute();
 //         $schedule->command('command:logDemo')->everyMinute();
     }
 
